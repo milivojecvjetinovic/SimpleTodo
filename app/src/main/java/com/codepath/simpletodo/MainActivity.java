@@ -11,32 +11,44 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.activeandroid.query.Select;
+import com.codepath.simpletodo.data.TodoAdapter;
+import com.codepath.simpletodo.data.TodoItem;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends ActionBarActivity {
 
     private static final int REQUEST_CODE = 20 ;  //tracking activity
-    private ArrayList<String> items;
+    private ArrayList<TodoItem> items;
     //adapter to eazy display items array list to the list container
-    private ArrayAdapter<String> itemsAdapter;
+//    private ArrayAdapter<TodoItem> itemsAdapter;`
+    private TodoAdapter itemsAdapter;
     private ListView lvItems;
     public static final String EDIT_ITEM = "editItem";
+    private DueDateComparator comparator;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        items = new ArrayList<>();
         //get hold of references
         lvItems = (ListView) findViewById(R.id.lvItems);
 //        items = new ArrayList<>();
-        readItems();
-        itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
+        readItemsFromDb();
+//        itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, items);
+        itemsAdapter = new TodoAdapter(this,R.layout.item_todo, items);
+        comparator =  new DueDateComparator();
+        Collections.sort(items, comparator);
         lvItems.setAdapter(itemsAdapter);
 //        items.add("First item");
 //        items.add("Second item");
@@ -50,10 +62,11 @@ public class MainActivity extends ActionBarActivity {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> adapter, View item, int pos, long id) {
                         //remove item on position
+                        TodoItem todoItem = items.get(pos);
                         items.remove(pos);
                         //notify screen about the changes
                         itemsAdapter.notifyDataSetChanged();
-                        writeItems();
+                        todoItem.delete();
                         return true;
                     }
                 }
@@ -70,12 +83,12 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void launchComposeView(int position) {
-
-        String itemText = items.get(position);
+        TodoItem todoItem = items.get(position);
+        String itemText = todoItem.itemText;
         //create flow from main to edit
         Intent i = new Intent(MainActivity.this, EditItemActivity.class);
         //set key value pairs
-        EditItemData data = new EditItemData(itemText, position);
+        EditItemData data = new EditItemData(itemText, position, todoItem.dueDate);
         i.putExtra(MainActivity.EDIT_ITEM, data);
         //start screen
         startActivityForResult(i, REQUEST_CODE);
@@ -108,34 +121,51 @@ public class MainActivity extends ActionBarActivity {
         EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
         //add to adapter
-        itemsAdapter.add(itemText);
+        TodoItem item = new TodoItem(itemText, new Date());
+        itemsAdapter.add(item);
+        Collections.sort(items, comparator);
+
+        itemsAdapter.notifyDataSetChanged();
         //clear entry
         etNewItem.setText("");
-        writeItems();
+        writeItemToDb(item);
     }
 
 
-    private void readItems() {
-        File filesDir = getFilesDir();
-        File todoFiles = new File(filesDir, "todo.txt");
 
-        try {
-            items = new ArrayList<>(FileUtils.readLines(todoFiles));
-        } catch (IOException e) {
-            items = new ArrayList<>();
+    private void readItemsFromDb(){
+        List<TodoItem> todoItems = new Select().from(TodoItem.class).orderBy("dueDate ASC").limit(100).execute();
+        if(todoItems!=null && !todoItems.isEmpty()){
+            items.addAll(todoItems);
         }
     }
 
+//    private void readItems() {
+//        File filesDir = getFilesDir();
+//        File todoFiles = new File(filesDir, "todo.txt");
+//
+//        try {
+//            items = new ArrayList<>(FileUtils.readLines(todoFiles));
+//        } catch (IOException e) {
+//            items = new ArrayList<>();
+//        }
+//    }
 
-    private void writeItems() {
-        File filesDir = getFilesDir();
-        File todoFile = new File(filesDir, "todo.txt");
 
-        try {
-            FileUtils.writeLines(todoFile, items);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//    private void writeItems() {
+//        File filesDir = getFilesDir();
+//        File todoFile = new File(filesDir, "todo.txt");
+//
+//        try {
+//            FileUtils.writeLines(todoFile, items);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+    private void writeItemToDb(TodoItem item){
+        item.save();
     }
 
     @Override
@@ -143,10 +173,16 @@ public class MainActivity extends ActionBarActivity {
         if(resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             //get data
             EditItemData data = (EditItemData) i.getSerializableExtra(MainActivity.EDIT_ITEM);
+            TodoItem todoItem = items.get(data.position);
+            todoItem.itemText = data.itemText;
+            todoItem.lastModified = new Date();
+            todoItem.dueDate = data.date;
+            Collections.sort(items, comparator);
             //change adaptor and display item
-            items.set(data.position, data.itemText);
+//            items.set(data.position, data.itemText);
+//            itemsAdapter.sort(comparator);
             itemsAdapter.notifyDataSetChanged();
-            writeItems();
+            writeItemToDb(todoItem);
         }
     }
 }

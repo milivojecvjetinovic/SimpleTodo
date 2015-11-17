@@ -6,13 +6,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.codepath.simpletodo.EditItemActivity">
+    android:padding="50dp"
+
+    tools:context="com.codepath.simpletodo.EditItemActivity"
+    android:weightSum="1">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/labelEditText"
-        android:id="@+id/textView" />
+        android:id="@+id/textView"
+        android:padding="10dp"/>
+
+    <DatePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/datePicker"
+        android:datePickerMode="spinner"
+        android:calendarViewShown="false"
+        android:spinnersShown="true"
+        android:padding="10dp"
+        />
+
 
     <EditText
         android:layout_width="wrap_content"
@@ -20,13 +35,17 @@
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/editItemText"
-        android:layout_marginTop="82dp"
+
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:hint="Enter Text Below" />
+        android:hint="Enter Text Below"
+        android:padding="10dp"/>
+
+
+
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="134dp"
         android:layout_height="wrap_content"
         android:text="Save"
         android:id="@+id/btnSave"
@@ -34,7 +53,12 @@
         android:layout_below="@+id/editItemText"
         android:layout_alignLeft="@+id/editItemText"
         android:layout_alignStart="@+id/editItemText"
-        android:layout_marginTop="82dp"/>
+        android:padding="10dp"
+         />
+
+
+
+
 
 
 </LinearLayout>
