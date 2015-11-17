@@ -34,12 +34,12 @@ public class TodoAdapter extends ArrayAdapter<TodoItem> {
         }
 
         TextView itemText = (TextView) convertView.findViewById(R.id.itemText);
-//        TextView priority = (TextView) convertView.findViewById(R.id.priority);
+        TextView priority = (TextView) convertView.findViewById(R.id.priority);
         TextView dueDate =  (TextView) convertView.findViewById(R.id.dueDate);
 
         itemText.setText(item.itemText);
         //setting int to string will throw Resources$NotFoundException:!!!
-//        priority.setText(String.valueOf(item.priority));
+        priority.setText(item.priority);
         if(item.dueDate != null) {
             dueDate.setText(formatter.format(item.dueDate));
         }

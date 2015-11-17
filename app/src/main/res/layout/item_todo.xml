@@ -22,5 +22,14 @@
         android:id="@+id/dueDate"
         android:minWidth="100dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="priority"
+        android:id="@+id/priority"
+        android:layout_row="0"
+        android:layout_column="2"
+        android:minWidth="30dp" />
+
 
 </GridLayout>

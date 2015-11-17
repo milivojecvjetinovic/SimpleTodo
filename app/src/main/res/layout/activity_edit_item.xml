@@ -42,7 +42,11 @@
         android:padding="10dp"/>
 
 
-
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/priority"
+        android:spinnerMode="dropdown" />
 
     <Button
         android:layout_width="134dp"
@@ -55,10 +59,6 @@
         android:layout_alignStart="@+id/editItemText"
         android:padding="10dp"
          />
-
-
-
-
 
 
 </LinearLayout>

@@ -4,4 +4,9 @@
     <string name="etNewItemHint">Enter New Item</string>
     <string name="title_activity_edit_item">EditItemActivity</string>
     <string name="labelEditText">Edit Text Below</string>
+    <string-array name="priority_array">
+        <item>High</item>
+        <item>Medium</item>
+        <item>Low</item>
+    </string-array>
 </resources>

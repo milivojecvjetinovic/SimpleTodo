@@ -4,20 +4,20 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
-import java.util.Calendar;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by mcvjetinovic on 11/15/15.
  */
 @Table(name = "TodoItem")
-public class TodoItem extends Model {
+public class TodoItem extends Model implements Serializable {
 
     @Column(name = "itemText")
     public String itemText;
 
     @Column(name = "priority")
-    public int priority;
+    public String priority;
 
     @Column(name = "dueDate")
     public Date dueDate;
@@ -32,10 +32,7 @@ public class TodoItem extends Model {
     public TodoItem(String itemText, Date created){
         this.itemText = itemText;
         this.lastModified = created;
-//        Calendar c = Calendar.getInstance();
-//        c.add(Calendar.DATE, 5);
-//        this.dueDate =
         this.dueDate = created;
-        this.priority = 1;
+        this.priority = "Low";
     }
 }

@@ -88,11 +88,14 @@ public class MainActivity extends ActionBarActivity {
         //create flow from main to edit
         Intent i = new Intent(MainActivity.this, EditItemActivity.class);
         //set key value pairs
-        EditItemData data = new EditItemData(itemText, position, todoItem.dueDate);
+        EditItemData data = new EditItemData(itemText, position, todoItem.dueDate, todoItem.priority);
         i.putExtra(MainActivity.EDIT_ITEM, data);
         //start screen
         startActivityForResult(i, REQUEST_CODE);
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -177,10 +180,8 @@ public class MainActivity extends ActionBarActivity {
             todoItem.itemText = data.itemText;
             todoItem.lastModified = new Date();
             todoItem.dueDate = data.date;
+            todoItem.priority = data.priority;
             Collections.sort(items, comparator);
-            //change adaptor and display item
-//            items.set(data.position, data.itemText);
-//            itemsAdapter.sort(comparator);
             itemsAdapter.notifyDataSetChanged();
             writeItemToDb(todoItem);
         }
